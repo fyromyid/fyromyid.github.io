@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Tools</title>
+
+    <style>
+        :root {
+            --primary: #FF6673;
+            --bg: #f5f5f5;
+            --card: #ffffff;
+            --text: #333;
+            --border: #ddd;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        header {
+            background: #fff;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .container {
+            padding: 16px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 14px;
+            border: 1px solid var(--border);
+        }
+
+        .card h2 {
+            margin: 0 0 8px;
+            font-size: 1.1rem;
+        }
+
+        .card p {
+            margin: 0 0 14px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .btn.secondary {
+            background: #fff;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.75rem;
+            color: #999;
+            padding: 12px 0 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    📧 Email Tools
+</header>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Email Generator</h2>
+        <p>Buat variasi email dengan cepat dan sederhana.</p>
+        <a href="generator.html" class="btn">Buka Generator</a>
+    </div>
+
+    <div class="card">
+        <h2>Catatan / Manager Email</h2>
+        <p>Simpan, tandai, dan kelola daftar email.</p>
+        <a href="manager.html" class="btn secondary">Buka Manager</a>
+    </div>
+
+</div>
+
+<footer>
+    © Email Tools
+</footer>
+
+</body>
+</html>

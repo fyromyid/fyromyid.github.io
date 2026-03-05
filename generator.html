@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmail Generator</title>
+    <style>
+        :root {
+            --primary-color: #FF6673;
+            --primary-dark: #e05562;
+            --primary-light: #ff8b95;
+            --secondary-color: #4A5568;
+            --light-color: #F7FAFC;
+            --dark-color: #2D3748;
+            --success-color: #48BB78;
+            --error-color: #e74c3c;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .input-section, .output-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 102, 115, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .output-header h2 {
+            color: var(--secondary-color);
+        }
+
+        .email-count {
+            background-color: var(--primary-light);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .email-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: var(--border-radius);
+            padding: 15px;
+        }
+
+        .email-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .email-item:last-child {
+            border-bottom: none;
+        }
+
+        .email-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .copy-btn {
+            background-color: var(--success-color);
+            margin-top: 15px;
+        }
+
+        .copy-btn:hover {
+            background-color: #38a169;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: var(--success-color);
+            color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 576px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .input-section, .output-section {
+                padding: 20px 15px;
+            }
+        }
+        
+        /* Styling untuk Popup Error */
+        .error-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .error-popup.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .error-popup-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            transform: translateY(-20px);
+            transition: var(--transition);
+        }
+
+        .error-popup.active .error-popup-content {
+            transform: translateY(0);
+        }
+
+        .error-icon {
+            font-size: 48px;
+            color: var(--error-color);
+            margin-bottom: 15px;
+        }
+
+        .error-popup h2 {
+            color: var(--error-color);
+            margin-bottom: 15px;
+        }
+
+        .error-popup p {
+            margin-bottom: 25px;
+            color: var(--dark-color);
+        }
+
+        .error-popup .btn {
+            background-color: var(--error-color);
+        }
+
+        .error-popup .btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gmail Generator</h1>
+            <p>Buat banyak kotak surat baru dari email Gmail Anda. Generator email dapat dengan cepat membuat beberapa alias untuk Gmail Anda. Semua kotak surat akan mengarahkan email ke kotak surat utama Anda. Jadi, dengan satu akun, Anda dapat secara otomatis memiliki banyak akun email lain untuk Google.</p>
+        </header>
+
+        <div class="main-content">
+            <section class="input-section">
+                <h2>Masukkan Detail</h2>
+                <div class="form-group">
+                    <label for="username">Nama Pengguna Gmail</label>
+                    <input type="text" id="username" placeholder="contoh: alexryanpratama">
+                </div>
+                <div class="form-group">
+                    <label for="max-dots">Jumlah Titik Maksimal</label>
+                    <input type="number" id="max-dots" min="1" max="10" value="10">
+                </div>
+                <div class="form-group">
+                    <label for="email-count">Jumlah Email yang Dihasilkan</label>
+                    <input type="number" id="email-count" min="1" max="10000" value="1000">
+                </div>
+                <button id="generate-btn" class="btn btn-block">Generate Email</button>
+            </section>
+
+            <section class="output-section">
+                <div class="output-header">
+                    <h2>Hasil Email</h2>
+                    <span id="count-display" class="email-count">0 email</span>
+                </div>
+                <div id="email-list" class="email-list">
+                    <div class="email-item">Email akan muncul di sini...</div>
+                </div>
+                <button id="copy-btn" class="btn btn-block copy-btn">Salin Semua Email</button>
+            </section>
+        </div>
+
+        <footer>
+            <p>&copy; 2025 Alex Ryan Pratama</p>
+        </footer>
+    </div>
+
+    <!-- Popup Error -->
+    <div id="error-popup" class="error-popup">
+        <div class="error-popup-content">
+            <div class="error-icon">⚠️</div>
+            <h2>Terjadi Kesalahan</h2>
+            <p id="error-message">Masukkan nama pengguna Gmail terlebih dahulu!</p>
+            <button id="close-error-btn" class="btn">Tutup</button>
+        </div>
+    </div>
+
+    <div id="notification" class="notification">
+        Email berhasil disalin!
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateBtn = document.getElementById('generate-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const notification = document.getElementById('notification');
+            const emailList = document.getElementById('email-list');
+            const countDisplay = document.getElementById('count-display');
+            const closeErrorBtn = document.getElementById('close-error-btn');
+            const errorPopup = document.getElementById('error-popup');
+            const errorMessage = document.getElementById('error-message');
+            
+            // Fungsi untuk menampilkan popup error
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorPopup.classList.add('active');
+                
+                // Tambahkan event listener untuk menutup popup dengan ESC
+                document.addEventListener('keydown', handleEscapeKey);
+            }
+
+            // Fungsi untuk menyembunyikan popup error
+            function hideError() {
+                errorPopup.classList.remove('active');
+                
+                // Hapus event listener untuk ESC
+                document.removeEventListener('keydown', handleEscapeKey);
+            }
+
+            // Fungsi untuk menangani tombol ESC
+            function handleEscapeKey(event) {
+                if (event.key === 'Escape') {
+                    hideError();
+                }
+            }
+            
+            // Fungsi untuk menghasilkan kombinasi titik
+            function generateDotCombinations(username, maxDots) {
+                const results = [];
+                const length = username.length;
+                
+                // Fungsi rekursif untuk menempatkan titik
+                function placeDots(current, index, dotsLeft) {
+                    if (index === length - 1) {
+                        results.push(current + username.charAt(index));
+                        return;
+                    }
+                    
+                    // Tambahkan karakter tanpa titik
+                    placeDots(current + username.charAt(index), index + 1, dotsLeft);
+                    
+                    // Tambahkan karakter dengan titik jika masih ada titik yang tersisa
+                    if (dotsLeft > 0) {
+                        placeDots(current + username.charAt(index) + '.', index + 1, dotsLeft - 1);
+                    }
+                }
+                
+                placeDots('', 0, maxDots);
+                return results;
+            }
+            
+            // Fungsi untuk menghasilkan email
+            function generateEmails() {
+                const username = document.getElementById('username').value.trim();
+                const maxDots = parseInt(document.getElementById('max-dots').value);
+                const emailCount = parseInt(document.getElementById('email-count').value);
+                
+                if (!username) {
+                    showError("Masukkan nama pengguna Gmail terlebih dahulu!");
+                    return;
+                }
+                
+                // Validasi input tambahan
+                if (maxDots < 1 || maxDots > 10) {
+                    showError("Jumlah titik maksimal harus antara 1 - 10!");
+                    return;
+                }
+                
+                if (emailCount < 1 || emailCount > 10000) {
+                    showError("Jumlah email yang dihasilkan harus antara 1 - 10.000!");
+                    return;
+                }
+                
+                // Bersihkan daftar email
+                emailList.innerHTML = '';
+                
+                // Hasilkan kombinasi dengan titik
+                const combinations = generateDotCombinations(username, maxDots);
+                
+                // Batasi jumlah email sesuai permintaan
+                const limitedCombinations = combinations.slice(0, emailCount);
+                
+                // Tampilkan email
+                limitedCombinations.forEach(combination => {
+                    const emailItem = document.createElement('div');
+                    emailItem.className = 'email-item';
+                    emailItem.textContent = combination + '@gmail.com';
+                    emailList.appendChild(emailItem);
+                });
+                
+                // Perbarui jumlah email
+                countDisplay.textContent = `${limitedCombinations.length} email`;
+            }
+            
+            // Fungsi untuk menyalin semua email
+            function copyEmails() {
+                const emailItems = document.querySelectorAll('.email-item');
+                if (emailItems.length === 0) {
+                    showError("Tidak ada email untuk disalin!");
+                    return;
+                }
+                
+                const emails = Array.from(emailItems).map(item => item.textContent).join('\n');
+                
+                navigator.clipboard.writeText(emails).then(() => {
+                    // Tampilkan notifikasi
+                    notification.classList.add('show');
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                    }, 3000);
+                }).catch(err => {
+                    console.error('Gagal menyalin teks: ', err);
+                    showError('Gagal menyalin email!');
+                });
+            }
+            
+            // Event listeners
+            generateBtn.addEventListener('click', generateEmails);
+            copyBtn.addEventListener('click', copyEmails);
+            
+            // Event listener untuk tombol tutup error
+            closeErrorBtn.addEventListener('click', hideError);
+
+            // Event listener untuk klik di luar popup
+            errorPopup.addEventListener('click', function(event) {
+                if (event.target === errorPopup) {
+                    hideError();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Manager</title>
+    <style>
+        :root {
+            --primary-color: #FF6673;
+            --primary-dark: #e55a67;
+            --light-bg: #f9f9f9;
+            --dark-text: #333;
+            --light-text: #fff;
+            --border-color: #ddd;
+            --success-color: #4CAF50;
+            --danger-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            padding: 20px 0;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .input-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            margin-bottom: 15px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 102, 115, 0.2);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .email-list {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .email-header {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 15px;
+            padding: 15px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .email-item {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 15px;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+        }
+
+        .email-item:last-child {
+            border-bottom: none;
+        }
+
+        .email-address {
+            word-break: break-all;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-used {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-unused {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-copy {
+            background-color: #2196F3;
+        }
+
+        .btn-copy:hover {
+            background-color: #0b7dda;
+        }
+
+        .btn-toggle {
+            background-color: #9c27b0;
+        }
+
+        .btn-toggle:hover {
+            background-color: #7b1fa2;
+        }
+
+        .btn-delete {
+            background-color: var(--danger-color);
+        }
+
+        .btn-delete:hover {
+            background-color: #d32f2f;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #777;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 102, 115, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            .email-header, .email-item {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .action-buttons {
+                justify-content: flex-end;
+            }
+
+            .stats {
+                flex-direction: column;
+            }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Email Manager</h1>
+            <p class="description">Kelola daftar email yang sudah dan belum digunakan</p>
+        </header>
+
+        <div class="input-section">
+            <h2>Tambah Email Baru</h2>
+            <textarea id="emailInput" placeholder="contoh:
+alexryanpratama851@gmail.com
+alexryanpratama85.1@gmail.com
+alexryanpratama8.51@gmail.com"></textarea>
+            <button id="submitBtn">Tambah ke Daftar</button>
+        </div>
+
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Cari email...">
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalEmails">0</div>
+                <div class="stat-label">Total Email</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="usedEmails">0</div>
+                <div class="stat-label">Sudah Digunakan</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="unusedEmails">0</div>
+                <div class="stat-label">Belum Digunakan</div>
+            </div>
+        </div>
+
+        <div class="email-list">
+            <div class="email-header">
+                <center><div>Daftar Email</div></center>
+            </div>
+            <div id="emailListContainer">
+                <!-- Email items will be added here dynamically -->
+                <div class="empty-state" id="emptyState">
+                    <p>Belum ada email yang ditambahkan</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 Alex Ryan Pratama</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const emailInput = document.getElementById('emailInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const emailListContainer = document.getElementById('emailListContainer');
+            const emptyState = document.getElementById('emptyState');
+            const searchInput = document.getElementById('searchInput');
+            const totalEmails = document.getElementById('totalEmails');
+            const usedEmails = document.getElementById('usedEmails');
+            const unusedEmails = document.getElementById('unusedEmails');
+
+            // Load emails from localStorage
+            let emails = JSON.parse(localStorage.getItem('emails')) || [];
+            
+            // Initial render
+            renderEmailList();
+            updateStats();
+
+            // Submit button event
+            submitBtn.addEventListener('click', function() {
+                const emailText = emailInput.value.trim();
+                if (!emailText) {
+                    alert('Masukkan daftar email terlebih dahulu!');
+                    return;
+                }
+
+                const newEmails = emailText.split('\n')
+                    .map(email => email.trim())
+                    .filter(email => email && isValidEmail(email))
+                    .map(email => ({
+                        address: email,
+                        used: false,
+                        id: Date.now() + Math.random()
+                    }));
+
+                if (newEmails.length === 0) {
+                    alert('Tidak ada email valid yang ditemukan!');
+                    return;
+                }
+
+                // Add new emails, avoiding duplicates
+                newEmails.forEach(newEmail => {
+                    if (!emails.some(email => email.address === newEmail.address)) {
+                        emails.push(newEmail);
+                    }
+                });
+
+                // Save to localStorage and update UI
+                localStorage.setItem('emails', JSON.stringify(emails));
+                renderEmailList();
+                updateStats();
+                
+                // Clear input
+                emailInput.value = '';
+            });
+
+            // Search functionality
+            searchInput.addEventListener('input', function() {
+                renderEmailList();
+            });
+
+            // Render email list
+            function renderEmailList() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filteredEmails = emails.filter(email => 
+                    email.address.toLowerCase().includes(searchTerm)
+                );
+
+                if (filteredEmails.length === 0) {
+                    emailListContainer.innerHTML = '';
+                    emailListContainer.appendChild(emptyState);
+                    return;
+                }
+
+                emailListContainer.innerHTML = '';
+                emptyState.remove();
+
+                filteredEmails.forEach(email => {
+                    const emailItem = document.createElement('div');
+                    emailItem.className = 'email-item';
+                    emailItem.innerHTML = `
+                        <div class="email-address">${email.address}</div>
+                        <div class="status-badge ${email.used ? 'status-used' : 'status-unused'}">
+                            ${email.used ? 'Sudah Digunakan' : 'Belum Digunakan'}
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn-copy" data-id="${email.id}">Salin</button>
+                            <button class="btn-toggle" data-id="${email.id}">
+                                ${email.used ? 'Tandai Belum' : 'Tandai Sudah'}
+                            </button>
+                            <button class="btn-delete" data-id="${email.id}">Hapus</button>
+                        </div>
+                    `;
+                    emailListContainer.appendChild(emailItem);
+                });
+
+                // Add event listeners to buttons
+                document.querySelectorAll('.btn-copy').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        const email = emails.find(e => e.id == id);
+                        if (email) {
+                            navigator.clipboard.writeText(email.address)
+                                .then(() => {
+                                    // Show temporary feedback
+                                    const originalText = this.textContent;
+                                    this.textContent = 'Tersalin!';
+                                    setTimeout(() => {
+                                        this.textContent = originalText;
+                                    }, 2000);
+                                })
+                                .catch(err => {
+                                    console.error('Gagal menyalin: ', err);
+                                    alert('Gagal menyalin email ke clipboard');
+                                });
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.btn-toggle').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        const email = emails.find(e => e.id == id);
+                        if (email) {
+                            email.used = !email.used;
+                            localStorage.setItem('emails', JSON.stringify(emails));
+                            renderEmailList();
+                            updateStats();
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.btn-delete').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        if (confirm('Apakah Anda yakin ingin menghapus email ini?')) {
+                            emails = emails.filter(e => e.id != id);
+                            localStorage.setItem('emails', JSON.stringify(emails));
+                            renderEmailList();
+                            updateStats();
+                        }
+                    });
+                });
+            }
+
+            // Update statistics
+            function updateStats() {
+                const total = emails.length;
+                const used = emails.filter(email => email.used).length;
+                const unused = total - used;
+
+                totalEmails.textContent = total;
+                usedEmails.textContent = used;
+                unusedEmails.textContent = unused;
+            }
+
+            // Simple email validation
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+        });
+    </script>
+</body>
+</html>

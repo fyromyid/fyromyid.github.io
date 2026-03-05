@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Copy OTP</title>
+</head>
+<body>
+<script>
+const params = new URLSearchParams(location.search);
+const otp = params.get("otp");
+
+if (otp) {
+  navigator.clipboard.writeText(otp).then(() => {
+    // coba buka Weelife
+    location.href = "intent://login#Intent;package=com.newlang.weelife;end";
+
+    // kalau gagal → balik otomatis
+    setTimeout(() => {
+      history.back(); // balik ke app sebelumnya (login)
+    }, 1200);
+  });
+}
+</script>
+</body>
+</html>
