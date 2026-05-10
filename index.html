@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digiflazz - Login & Register</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-box">
+            <div class="logo">
+                <h1>⚡ Digiflazz</h1>
+                <p>Pembelian Pulsa & Data</p>
+            </div>
+
+            <!-- Form Login -->
+            <div id="loginForm" class="form-section">
+                <h2>Login</h2>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="loginUsername" placeholder="Masukkan username" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Masukkan password" required>
+                </div>
+                <button onclick="handleLogin()" class="btn btn-primary">Login</button>
+                <p class="switch-text">Belum punya akun? <a href="#" onclick="toggleForm('register')">Daftar</a></p>
+                <div id="loginError" class="error-message"></div>
+            </div>
+
+            <!-- Form Register -->
+            <div id="registerForm" class="form-section hidden">
+                <h2>Daftar Akun</h2>
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="regUsername" placeholder="Masukkan username" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="regPassword" placeholder="Min. 6 karakter" required>
+                </div>
+                <div class="input-group">
+                    <label>Konfirmasi Password</label>
+                    <input type="password" id="regConfirmPassword" placeholder="Ulangi password" required>
+                </div>
+                <div class="input-group">
+                    <label>PIN Keamanan (6 digit)</label>
+                    <input type="password" id="regPin" placeholder="Contoh: 123456" maxlength="6" required>
+                </div>
+                <button onclick="handleRegister()" class="btn btn-primary">Daftar</button>
+                <p class="switch-text">Sudah punya akun? <a href="#" onclick="toggleForm('login')">Login</a></p>
+                <div id="registerError" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

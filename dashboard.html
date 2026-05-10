@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digiflazz - Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>⚡ Digiflazz</h2>
+            </div>
+            <ul class="nav-menu">
+                <li class="active"><a href="#">📱 Pembelian</a></li>
+                <li><a href="#" onclick="showHistory()">📋 Riwayat</a></li>
+                <li><a href="#" onclick="logout()">🚪 Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="dashboard-header">
+                <div class="user-info">
+                    <span id="welcomeUser">Selamat datang, User</span>
+                </div>
+                <div class="balance-card">
+                    <div class="balance-label">Saldo Anda</div>
+                    <div class="balance-amount" id="userSaldo">Rp 0</div>
+                </div>
+            </header>
+
+            <!-- Pembelian Section -->
+            <section class="content-section">
+                <h2>Pembelian Produk</h2>
+                
+                <div class="purchase-form">
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Nomor HP Tujuan</label>
+                            <input type="text" id="targetNumber" placeholder="08xxxxxxxxxx" maxlength="15">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>Pilih Produk</label>
+                            <select id="productSelect" onchange="updateProductInfo()">
+                                <option value="">-- Pilih Produk --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="product-info hidden" id="productInfo">
+                        <div class="info-card">
+                            <div class="info-row">
+                                <span>SKU:</span>
+                                <span id="infoSku">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Produk:</span>
+                                <span id="infoName">-</span>
+                            </div>
+                            <div class="info-row">
+                                <span>Harga:</span>
+                                <span id="infoPrice">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <button onclick="showPinModal()" class="btn btn-primary btn-large">
+                            🔒 Bayar dengan PIN
+                        </button>
+                    </div>
+                    
+                    <div id="purchaseError" class="error-message"></div>
+                </div>
+            </section>
+
+            <!-- Riwayat Section -->
+            <section class="content-section hidden" id="historySection">
+                <h2>Riwayat Pembelian</h2>
+                <div class="table-container">
+                    <table id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Produk</th>
+                                <th>Nomor</th>
+                                <th>Harga</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- PIN Modal -->
+    <div id="pinModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔐 Masukkan PIN Keamanan</h3>
+                <button onclick="closePinModal()" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="pin-input-group">
+                    <input type="password" id="pinInput" maxlength="6" placeholder="******">
+                </div>
+                <p class="pin-info">PIN wajib untuk keamanan checkout</p>
+                <button onclick="processPurchase()" class="btn btn-primary btn-full">Konfirmasi Pembayaran</button>
+                <div id="pinError" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Memproses...</p>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <script src="js/firebase-config.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
